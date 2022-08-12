@@ -1,4 +1,4 @@
-const { Connection, clusterApiUrl, Keypair, LAMPORTS_PER_SOL, StakeProgram, Authorized, Lockup, sendAndConfirmRawTransaction } = require("@solana/web3.js");
+const { Connection, clusterApiUrl, Keypair, LAMPORTS_PER_SOL, StakeProgram, Authorized, Lockup, sendAndConfirmTransaction } = require("@solana/web3.js");
 
 //list of validators on Solana Blockchain
 const main = async () => {
@@ -11,13 +11,17 @@ const main = async () => {
     const amountUserWantsToStake = 0.5 * LAMPORTS_PER_SOL;
     const amountToStake = minimumRent * amountUserWantsToStake;
     const createStakeAccountTx = StakeProgram.createAccount({
-        authorized: new Authorize(wallet.publicKey, wallet.publicKey),
+        authorized: new Authorized(wallet.publicKey, wallet.publicKey),
         fromPubkey: wallet.publicKey,
         lamports: amountToStake,
         lockup: new Lockup(0, 0, wallet.publicKey),
         stakePubkey: stakeAccount.publicKey
     });
-    const createStakeAccountTxId = await sendAndConfirmRawTransaction(connection, createStakeAccountTx, [wallet, stakeAccount]);
+    const createStakeAccountTxId = await sendAndConfirmTransaction(
+        connection, 
+        createStakeAccountTx, 
+        [wallet, stakeAccount]
+    );
     console.log(`Stake account created Tx Id: ${createStakeAccountTxId}.`);
     let stakeBalance = await connection.getBalance(stakeAccount.publicKey);
     console.log(
@@ -32,7 +36,7 @@ const main = async () => {
         `Stake account status: ${stakeStatus.state}.`
     );
 
-    
+
 };
 
 const runMain = async () => {
