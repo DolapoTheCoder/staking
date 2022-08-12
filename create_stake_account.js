@@ -4,7 +4,8 @@ const { Connection, clusterApiUrl, Keypair, LAMPORTS_PER_SOL, StakeProgram, Auth
 const main = async () => {
     const connection = new Connection(clusterApiUrl('devnet'), 'processed')
     const wallet = Keypair.generate();
-    const airdropsignature = await connection.requestAirdrop(wallet.publicKey, 1 * LAMPORTS_PER_SOL);
+    console.log(wallet.publicKey.toString());
+    const airdropsignature = await connection.requestAirdrop(wallet.publicKey, 2 * LAMPORTS_PER_SOL);
     await connection.confirmTransaction(airdropsignature);
     const stakeAccount = Keypair.generate();
     const minimumRent = await connection.getMinimumBalanceForRentExemption(StakeProgram.space);
